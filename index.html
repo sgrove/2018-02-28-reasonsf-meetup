@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title></title>
+<meta name="author" content="(Sean Groves)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="file:///Users/s/.emacs.d/support/reveal.js/css/reveal.css"/>
+
+<link rel="stylesheet" href="file:///Users/s/.emacs.d/support/reveal.js/css/theme/solarized.css" id="theme"/>
+
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'file:///Users/s/.emacs.d/support/reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="table-of-contents">
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#/slide-orgae18376">Who am I?</a></li>
+<li><a href="#/slide-orgf3b9c5d">Who is this talk about</a>
+<ul>
+<li><a href="#/slide-org807507e">Frontend</a></li>
+<li><a href="#/slide-orgd6b433f">Backend</a></li>
+<li><a href="#/slide-org13e165e">Tooling (PPX)</a></li>
+</ul>
+</li>
+<li><a href="#/slide-org298fab1">WARNING</a></li>
+<li><a href="#/slide-orgdc9fe14">Demo 1</a></li>
+<li><a href="#/slide-orge2bf6d6">Frontend</a>
+<ul>
+<li><a href="#/slide-orgba7db74"><span class="underline">What</span> do we get?</a></li>
+<li><a href="#/slide-org360e80f"><span class="underline">Why</span> does it work?</a></li>
+<li><a href="#/slide-orgdee70c1"><span class="underline">How</span> does it work?</a>
+<ul>
+<li><a href="#/slide-org29e0b55">Step 1. Grab your deps</a></li>
+<li><a href="#/slide-org52f8ba0">Step 2. Teach ReasonML about your server</a></li>
+<li><a href="#/slide-orgaada469">Step 3. Render a component</a></li>
+<li><a href="#/slide-org68b6832">Step 4</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#/slide-org5aec165">Backend</a>
+<ul>
+<li><a href="#/slide-orgb13f37e"><span class="underline">Why</span> in Reason(Native)?</a>
+<ul>
+<li><a href="#/slide-orgdb6cb18">Kind</a></li>
+<li><a href="#/slide-orgbe70ccd">Firm</a></li>
+<li><a href="#/slide-orgcd51fc9">Honest</a></li>
+<li><a href="#/slide-org3063865">Ever-vigilant</a></li>
+</ul>
+</li>
+<li><a href="#/slide-orgde48f63"><span class="underline">How</span> in Reason(Native)?</a></li>
+</ul>
+</li>
+<li><a href="#/slide-orgb44d65b">Limitations</a>
+<ul>
+<li><a href="#/slide-orga41e39b">Frontend</a></li>
+<li><a href="#/slide-orge586d84">Backend</a></li>
+</ul>
+</li>
+<li><a href="#/slide-orga56389d">Demo 2</a></li>
+<li><a href="#/slide-orgb99ac03">Areas not covered</a></li>
+</ul>
+</div>
+</div>
+</section>
+<section>
+<section id="slide-orgae18376">
+<h2 id="orgae18376">Who am I?</h2>
+<ul>
+<li>Sean Grove (<a href="https://twitter.com/sgrove">@sgrove</a>)</li>
+<li>Background in Clojure(Script)/Reason/Rust</li>
+<li>Day job running an infrastructure handling lots of money</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgf3b9c5d">
+<h2 id="orgf3b9c5d">Who is this talk about</h2>
+<div class="outline-text-2" id="text-orgf3b9c5d">
+</div>
+</section>
+<section id="slide-org807507e">
+<h3 id="org807507e">Frontend</h3>
+
+<div class="figure">
+<p><img src="./img/gregoirevda.jpg" alt="gregoirevda.jpg" />
+</p>
+</div>
+
+<ul>
+<li>Grégoire Van der Auwermeulen (@gregoirevda)</li>
+<li>Brussels, Belgium</li>
+
+</ul>
+
+</section>
+<section id="slide-orgd6b433f">
+<h3 id="orgd6b433f">Backend</h3>
+
+<div class="figure">
+<p><img src="./img/andreas.jpg" alt="andreas.jpg" />
+</p>
+</div>
+
+<ul>
+<li>Andreas Garnaes (@andreas)</li>
+<li>København, Denmark</li>
+
+</ul>
+
+</section>
+<section id="slide-org13e165e">
+<h3 id="org13e165e">Tooling (PPX)</h3>
+
+<div class="figure">
+<p><img src="./img/mhallin.jpg" alt="mhallin.jpg" />
+</p>
+</div>
+
+<ul>
+<li>Magnus Hallin (@mhallin)</li>
+<li>Stockholm, Sweden</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org298fab1">
+<h2 id="org298fab1">WARNING</h2>
+<ul>
+<li>Breathlessly enthusiastic</li>
+<li>Caveats and limitations at the end of the talk</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgdc9fe14">
+<h2 id="orgdc9fe14">Demo 1</h2>
+<p>
+The Dream
+</p>
+
+<p>
+(almost)
+</p>
+<iframe width="80%" height="80%" src="https://www.youtube.com/embed/yMqE37LqRLA" frameborder="0" allowfullscreen></iframe>
+</section>
+</section>
+<section>
+<section id="slide-orge2bf6d6">
+<h2 id="orge2bf6d6">Frontend</h2>
+<div class="outline-text-2" id="text-orge2bf6d6">
+</div>
+</section>
+<section id="slide-orgba7db74">
+<h3 id="orgba7db74"><span class="underline">What</span> do we get?</h3>
+<ul>
+<li>Powerful clients
+<ul>
+<li>Get exactly what you want (no over/under fetching)</li>
+<li>Reduced latency and network calls (huge for mobile)</li>
+
+</ul></li>
+<li>Safe client
+<ul>
+<li>Won't even compile if server can't satisfy query</li>
+<li>Usage of query results are type-checked</li>
+<li>Nullable fields are enforced - no more run-time errors!</li>
+
+</ul></li>
+<li>Easy clients
+<ul>
+<li>Don't even think about network coordination</li>
+<li>Declaratively express requirements alongside components</li>
+
+</ul></li>
+
+</ul>
+</section>
+<section id="slide-org360e80f">
+<h3 id="org360e80f"><span class="underline">Why</span> does it work?</h3>
+<p>
+Typed backend!
+</p>
+<ul>
+<li>Rest servers don't have standard typing mechanism
+<ul>
+<li>Maintaining bindings is painful and error-prone</li>
+
+</ul></li>
+<li><p>
+GraphQL servers can query themselves about their own schema
+</p>
+<ul>
+<li>We can dump a server's fields and types consistently now!</li>
+
+</ul>
+<p>
+GraphQL + ReasonML = 💗
+</p></li>
+
+</ul>
+</section>
+<section id="slide-orgdee70c1">
+<h3 id="orgdee70c1"><span class="underline">How</span> does it work?</h3>
+<ol>
+<li>Install client</li>
+<li>Teach Reason about your server</li>
+<li>Render a component</li>
+<li>Bask in that warm glow</li>
+
+</ol>
+</section>
+<section id="slide-org29e0b55">
+<h4 id="org29e0b55">Step 1. Grab your deps</h4>
+<div class="org-src-container">
+
+<pre  class="src src-bash">create-react-app reason-graphql-demo --scripts-version reason-scripts
+<span style="color: #61afef; font-weight: bold;">cd</span> reason-graphql-demo
+<span style="color: #687080; font-style: italic;"># </span><span style="color: #687080; font-style: italic;">Add graphql_ppx</span>
+yarn add --dev graphql_ppx
+<span style="color: #687080; font-style: italic;"># </span><span style="color: #687080; font-style: italic;">Add JS dependencies</span>
+yarn add apollo-client apollo-cache-inmemory apollo-link <span style="color: #98be65;">\</span>
+     apollo-link-contextapollo-link-error apollo-link-http <span style="color: #98be65;">\</span>
+     graphql graphql-tag reason-apollo
+</pre>
+</div>
+</section>
+<section >
+<p>
+Thank goodness for tight NPM integration, eh?
+</p>
+</section>
+<section >
+<p>
+bsconfig.json
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-js"><span style="color: #98be65;">"bs-dependencies"</span>: [
+  <span style="color: #98be65;">"reason-react"</span>,
+  <span style="color: #98be65;">"reason-apollo"</span>
+],
+<span style="color: #98be65;">"ppx-flags"</span>: [
+    <span style="color: #98be65;">"graphql_ppx/ppx"</span>
+]
+</pre>
+</div>
+</section>
+<section id="slide-org52f8ba0">
+<h4 id="org52f8ba0">Step 2. Teach ReasonML about your server</h4>
+<div class="org-src-container">
+
+<pre  class="src src-bash">yarn send-introspection-query <span style="color: #98be65;">'https://serve.onegraph.com/dynamic?app_id=0b33e830-7cde-4b90-ad7e-2a39c57c0e11'</span>
+</pre>
+</div>
+</section>
+<section >
+<div class="org-src-container">
+
+<pre  class="src src-js">{
+  <span style="color: #98be65;">"data"</span>: {
+    <span style="color: #98be65;">"__schema"</span>: {
+      <span style="color: #98be65;">"queryType"</span>: {
+        <span style="color: #98be65;">"name"</span>: <span style="color: #98be65;">"Query"</span>
+      },
+      <span style="color: #98be65;">"mutationType"</span>: {
+        <span style="color: #98be65;">"name"</span>: <span style="color: #98be65;">"Mutation"</span>
+      },
+      <span style="color: #98be65;">"subscriptionType"</span>: <span style="color: #da8548; font-weight: bold;">null</span>,
+      <span style="color: #98be65;">"types"</span>: [
+        {
+          <span style="color: #98be65;">"kind"</span>: <span style="color: #98be65;">"ENUM"</span>,
+          <span style="color: #98be65;">"name"</span>: <span style="color: #98be65;">"OneGraphServiceEnum"</span>,
+          <span style="color: #98be65;">"description"</span>: <span style="color: #98be65;">"Services supported by OneGraph"</span>,
+</pre>
+</div>
+
+</section>
+<section id="slide-orgaada469">
+<h4 id="orgaada469">Step 3. Render a component</h4>
+<p>
+Fire up apollo&#x2026;
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-js">module Instance =
+  ReasonApollo.CreateClient(
+    {
+      <span style="color: #c678dd; font-weight: bold;">let</span> <span style="color: #61afef;">apolloClient</span> =
+        ReasonApollo.createApolloClient(
+          ~cache=inMemoryCache,
+          ~link=from([|authLink, errorLink, httpLink|]),
+          ()
+        );
+    }
+  );
+</pre>
+</div>
+</section>
+<section >
+<p>
+Insert query
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-js">module PokemonQuery = [%graphql {|
+  query getPokemon($name: String!){
+      pokemon(name: $name) {
+          name
+      }
+  }
+|}]; 
+</pre>
+</div>
+</section>
+<section >
+<p>
+Render!
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-js">module Query = Client.Instance.Query;
+
+<span style="color: #c678dd; font-weight: bold;">let</span> <span style="color: #61afef;">make</span> = (_children) =&gt; {
+  <span style="color: #687080; font-style: italic;">/* </span><span style="color: #687080; font-style: italic;">... */</span>
+  render: (_) =&gt; {
+  <span style="color: #c678dd; font-weight: bold;">let</span> <span style="color: #61afef;">pokemonQuery</span> = PokemonQuery.make(~name=<span style="color: #98be65;">"Pikachu"</span>, ());
+    &lt;Query query=pokemonQuery&gt;
+      ...((response, parse) =&gt; {
+        <span style="color: #c678dd; font-weight: bold;">switch</span> response {
+           | Loading =&gt; &lt;div&gt; (Utils.ste(<span style="color: #98be65;">"Loading"</span>)) &lt;/div&gt;
+           | Failed(error) =&gt; &lt;div&gt; (Utils.ste(error)) &lt;/div&gt;
+           | Loaded(result) =&gt; &lt;div&gt; 
+               (Utils.ste(parse(result)##user##name)) 
+             &lt;/div&gt;
+        }
+      })
+    &lt;/Query&gt;
+  }
+}
+</pre>
+</div>
+</section>
+<section id="slide-org68b6832">
+<h4 id="org68b6832">Step 4</h4>
+<p>
+Bask. Bask so hard.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org5aec165">
+<h2 id="org5aec165">Backend</h2>
+<div class="outline-text-2" id="text-org5aec165">
+</div>
+</section>
+<section id="slide-orgb13f37e">
+<h3 id="orgb13f37e"><span class="underline">Why</span> in Reason(Native)?</h3>
+<p>
+As server developers, we must be
+</p>
+<ul>
+<li>Kind</li>
+<li>Firm</li>
+<li>Honest</li>
+<li>Ever-vigilant</li>
+
+</ul>
+</section>
+<section id="slide-orgdb6cb18">
+<h4 id="orgdb6cb18">Kind</h4>
+<p>
+Give as much power to the client as possible, they know what they need
+</p>
+</section>
+<section id="slide-orgbe70ccd">
+<h4 id="orgbe70ccd">Firm</h4>
+<p>
+But not too much power - not the power to be wrong. 
+Make sure they're adhering to your agreed-upon contract
+</p>
+</section>
+<section id="slide-orgcd51fc9">
+<h4 id="orgcd51fc9">Honest</h4>
+<ul>
+<li>If you say you'll return an Int, return an int</li>
+<li>If you say a field is not nullable, do not return a null</li>
+
+</ul>
+</section>
+<section id="slide-org3063865">
+<h4 id="org3063865">Ever-vigilant</h4>
+<p>
+Make sure you're adhering to all the previous points:
+</p>
+<ul>
+<li>Even as your schema grows</li>
+<li>Even as your team grows</li>
+<li>Even as you're pushing a commit in a hurry on a rainy Friday at 7:30PM</li>
+
+</ul>
+</section>
+<section id="slide-orgde48f63">
+<h3 id="orgde48f63"><span class="underline">How</span> in Reason(Native)?</h3>
+<p>
+<a href="https://github.com/andreas/ocaml-graphql-server">ocaml-graphql-server</a>
+</p>
+
+<ul>
+<li>Best GraphQL Server in the world</li>
+
+</ul>
+<p>
+bar none.※
+</p>
+
+
+
+
+
+
+
+<p>
+※ &#x2026; having not really used any others
+</p>
+</section>
+<section >
+<p>
+Easily create a compile-time safe GraphQL engine:
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-js">open Schema;
+
+<span style="color: #687080; font-style: italic;">/* </span><span style="color: #687080; font-style: italic;">User object */</span>
+<span style="color: #c678dd; font-weight: bold;">let</span> <span style="color: #61afef;">user</span> =
+  obj(<span style="color: #98be65;">"user"</span>, ~doc=<span style="color: #98be65;">"A user in the system"</span>, ~fields=(_) =&gt;
+      [field(<span style="color: #98be65;">"name"</span>, 
+             ~doc=<span style="color: #98be65;">"A User's full name"</span>,
+             ~typ=non_null(string),
+             ~args=Arg.([]),
+             ~resolve=(ctx, userRecord) =&gt; userRecord.name)]);
+
+<span style="color: #687080; font-style: italic;">/* </span><span style="color: #687080; font-style: italic;">Schema that clients will see */</span>
+<span style="color: #c678dd; font-weight: bold;">let</span> <span style="color: #61afef;">fullSchema</span> =
+    schema([field(<span style="color: #98be65;">"users"</span>,
+                  ~typ=non_null(list(non_null(user))),
+                  ~args=Arg.([arg(<span style="color: #98be65;">"limit"</span>, ~typ=<span style="color: #61afef;">int</span>)]),
+                  ~resolve=(ctx, (), limit) =&gt; users)]);
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgb44d65b">
+<h2 id="orgb44d65b">Limitations</h2>
+<div class="outline-text-2" id="text-orgb44d65b">
+</div>
+</section>
+<section id="slide-orga41e39b">
+<h3 id="orga41e39b">Frontend</h3>
+<p>
+Not <span class="underline">all</span> of the GraphQL spec covered, might be missing e.g. custom scalars, etc.
+Probably won't be able to easily get GraphiQL-like auto-complete in-editor (maybe atom?)
+</p>
+</section>
+<section id="slide-orge586d84">
+<h3 id="orge586d84">Backend</h3>
+<p>
+Still figuring lots of things out:
+</p>
+<ul>
+<li>How to propagate errors</li>
+<li>Unions/Interfaces</li>
+<li>Subscriptions</li>
+<li>Directives</li>
+<li>Integrating into e.g. Apollo Engine</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orga56389d">
+<h2 id="orga56389d">Demo 2</h2>
+<p>
+Putting it all together, what do we get&#x2026;?
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orgb99ac03">
+<h2 id="orgb99ac03">Areas not covered</h2>
+<ul>
+<li>Persisted queries</li>
+
+</ul>
+</section>
+</section>
+</div>
+</div>
+<script src="file:///Users/s/.emacs.d/support/reveal.js/lib/js/head.min.js"></script>
+<script src="file:///Users/s/.emacs.d/support/reveal.js/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: true,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'file:///Users/s/.emacs.d/support/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+ { src: 'file:///Users/s/.emacs.d/support/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'file:///Users/s/.emacs.d/support/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'file:///Users/s/.emacs.d/support/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: 'file:///Users/s/.emacs.d/support/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>
