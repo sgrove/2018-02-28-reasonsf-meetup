@@ -1,0 +1,228 @@
+#+REVEAL_THEME: solarized
+#+REVEAL_TRANS: linear
+#+OPTIONS: reveal_title_slide:nil num:nil reveal_history:true
+* Who am I?
+- Sean Grove ([[https://twitter.com/sgrove][@sgrove]])
+- Background in Clojure(Script)/Reason/Rust
+- Day job running an infrastructure handling lots of money
+* Who is this talk about
+** Frontend
+ [[./img/gregoirevda.jpg]]
+
+ - Grégoire Van der Auwermeulen (@gregoirevda)
+ - Brussels, Belgium
+
+** Backend
+
+ [[./img/andreas.jpg]]
+
+ - Andreas Garnaes (@andreas)
+ - København, Denmark
+
+** Tooling (PPX)
+
+ [[./img/mhallin.jpg]]
+
+ - Magnus Hallin (@mhallin)
+ - Stockholm, Sweden
+
+* WARNING
+- Breathlessly enthusiastic
+- Caveats and limitations at the end of the talk
+* Demo 1
+The Dream
+
+(almost)
+#+REVEAL_HTML: <iframe width="80%" height="80%" src="https://www.youtube.com/embed/yMqE37LqRLA" frameborder="0" allowfullscreen></iframe>
+* Frontend
+** _What_ do we get?
+- Powerful clients
+  - Get exactly what you want (no over/under fetching)
+  - Reduced latency and network calls (huge for mobile)
+- Safe client
+  - Won't even compile if server can't satisfy query
+  - Usage of query results are type-checked
+  - Nullable fields are enforced - no more run-time errors!
+- Easy clients
+  - Don't even think about network coordination
+  - Declaratively express requirements alongside components
+** _Why_ does it work? 
+ Typed backend!
+- Rest servers don't have standard typing mechanism
+  - Maintaining bindings is painful and error-prone
+- GraphQL servers can query themselves about their own schema
+  - We can dump a server's fields and types consistently now!
+ GraphQL + ReasonML = 💗
+** _How_ does it work?
+1. Install client
+2. Teach Reason about your server
+3. Render a component
+4. Bask in that warm glow
+*** Step 1. Grab your deps
+     #+BEGIN_SRC bash
+create-react-app reason-graphql-demo --scripts-version reason-scripts
+cd reason-graphql-demo
+# Add graphql_ppx
+yarn add --dev graphql_ppx
+# Add JS dependencies
+yarn add apollo-client apollo-cache-inmemory apollo-link \
+     apollo-link-contextapollo-link-error apollo-link-http \
+     graphql graphql-tag reason-apollo
+     #+END_SRC
+#+REVEAL: split
+Thank goodness for tight NPM integration, eh?
+#+REVEAL: split
+bsconfig.json
+     #+BEGIN_SRC js
+"bs-dependencies": [
+  "reason-react",
+  "reason-apollo"
+],
+"ppx-flags": [
+    "graphql_ppx/ppx"
+]
+     #+END_SRC
+*** Step 2. Teach ReasonML about your server
+     #+BEGIN_SRC bash
+yarn send-introspection-query 'https://serve.onegraph.com/dynamic?app_id=0b33e830-7cde-4b90-ad7e-2a39c57c0e11'
+     #+END_SRC
+#+REVEAL: split
+     #+BEGIN_SRC js
+{
+  "data": {
+    "__schema": {
+      "queryType": {
+        "name": "Query"
+      },
+      "mutationType": {
+        "name": "Mutation"
+      },
+      "subscriptionType": null,
+      "types": [
+        {
+          "kind": "ENUM",
+          "name": "OneGraphServiceEnum",
+          "description": "Services supported by OneGraph",
+     #+END_SRC
+
+*** Step 3. Render a component
+Fire up apollo...
+     #+BEGIN_SRC js
+module Instance =
+  ReasonApollo.CreateClient(
+    {
+      let apolloClient =
+        ReasonApollo.createApolloClient(
+          ~cache=inMemoryCache,
+          ~link=from([|authLink, errorLink, httpLink|]),
+          ()
+        );
+    }
+  );
+     #+END_SRC
+#+REVEAL: split
+Insert query
+     #+BEGIN_SRC js
+module PokemonQuery = [%graphql {|
+  query getPokemon($name: String!){
+      pokemon(name: $name) {
+          name
+      }
+  }
+|}]; 
+     #+END_SRC
+#+REVEAL: split
+Render!
+     #+BEGIN_SRC js
+module Query = Client.Instance.Query;
+
+let make = (_children) => {
+  /* ... */
+  render: (_) => {
+  let pokemonQuery = PokemonQuery.make(~name="Pikachu", ());
+    <Query query=pokemonQuery>
+      ...((response, parse) => {
+        switch response {
+           | Loading => <div> (Utils.ste("Loading")) </div>
+           | Failed(error) => <div> (Utils.ste(error)) </div>
+           | Loaded(result) => <div> 
+               (Utils.ste(parse(result)##user##name)) 
+             </div>
+        }
+      })
+    </Query>
+  }
+}
+     #+END_SRC
+*** Step 4
+Bask. Bask so hard.
+* Backend
+** _Why_ in Reason(Native)?
+ As server developers, we must be
+ - Kind
+ - Firm
+ - Honest
+ - Ever-vigilant
+*** Kind
+Give as much power to the client as possible, they know what they need
+*** Firm
+But not too much power - not the power to be wrong. 
+Make sure they're adhering to your agreed-upon contract
+*** Honest
+- If you say you'll return an Int, return an int
+- If you say a field is not nullable, do not return a null
+*** Ever-vigilant
+Make sure you're adhering to all the previous points:
+ - Even as your schema grows
+ - Even as your team grows
+ - Even as you're pushing a commit in a hurry on a rainy Friday at 7:30PM
+** _How_ in Reason(Native)?
+ [[https://github.com/andreas/ocaml-graphql-server][ocaml-graphql-server]]
+
+- Best GraphQL Server in the world
+bar none.※
+
+
+
+
+
+
+
+※ ... having not really used any others
+#+REVEAL: split
+Easily create a compile-time safe GraphQL engine:
+     #+BEGIN_SRC js
+open Schema;
+
+/* User object */
+let user =
+  obj("user", ~doc="A user in the system", ~fields=(_) =>
+      [field("name", 
+             ~doc="A User's full name",
+             ~typ=non_null(string),
+             ~args=Arg.([]),
+             ~resolve=(ctx, userRecord) => userRecord.name)]);
+
+/* Schema that clients will see */
+let fullSchema =
+    schema([field("users",
+                  ~typ=non_null(list(non_null(user))),
+                  ~args=Arg.([arg("limit", ~typ=int)]),
+                  ~resolve=(ctx, (), limit) => users)]);
+     #+END_SRC
+* Limitations
+** Frontend
+Not _all_ of the GraphQL spec covered, might be missing e.g. custom scalars, etc.
+Probably won't be able to easily get GraphiQL-like auto-complete in-editor (maybe atom?)
+** Backend
+Still figuring lots of things out:
+- How to propagate errors
+- Unions/Interfaces
+- Subscriptions
+- Directives
+- Integrating into e.g. Apollo Engine
+* Demo 2
+Putting it all together, what do we get...?
+* Areas not covered
+- Persisted queries
+
